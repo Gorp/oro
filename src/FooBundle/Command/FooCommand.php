@@ -23,7 +23,7 @@ class FooCommand extends ContainerAwareCommand
     /**
      * Command text
      */
-    const FOO__TEXT   = 'Hello from Foo!';
+    const FOO__TEXT = 'Hello from Foo!';
     /**
      * Command
      */
@@ -36,8 +36,7 @@ class FooCommand extends ContainerAwareCommand
     {
 
         $this
-            ->setName(self::FOO_COMMAND)
-        ;
+            ->setName(self::FOO_COMMAND);
     }
 
     /**
@@ -52,13 +51,18 @@ class FooCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = $this->getContainer()->get('logger');
+        $logger->info("Executing " . self::FOO_COMMAND . " command itself first:");
         $output->writeln([
             self::FOO__TEXT,
         ]);
+        $logger->info(self::FOO__TEXT);
 
+        $logger->info("Executing " . self::FOO_COMMAND . " chain members:");
         $this->getContainer()->get('app.chain')->setDone(self::FOO_COMMAND);
         $command = $this->getContainer()->get('bar.command.bar');
         $command->run(new ArrayInput([]), $output);
+        $logger->info("Execution of " . self::FOO_COMMAND . " chain completed!");
     }
 
 

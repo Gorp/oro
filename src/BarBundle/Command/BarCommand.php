@@ -66,13 +66,16 @@ class BarCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = $this->getContainer()->get('logger');
         if (!$this->dependsDone()) {
+            $logger->error('Error: ' . self::BAR_COMMAND . ' command is a member of ' . $this->dependTo . ' command chain and cannot be executed on its own.');
             throw new \Exception('Error: ' . self::BAR_COMMAND . ' command is a member of ' . $this->dependTo . ' command chain and cannot be executed on its own.');
         }
 
         $output->writeln([
             self::BAR__TEXT,
         ]);
+        $logger->info(self::BAR__TEXT);
         $this->getContainer()->get('app.chain')->setDone(self::BAR_COMMAND);
     }
 
